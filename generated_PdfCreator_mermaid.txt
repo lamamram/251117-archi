@@ -1,0 +1,60 @@
+classDiagram
+    class PDFGenerator {
+        <<readonly>>
+        -FilesystemOperator filesStorage
+        -Environment twig
+        -RequestStack stack
+        +__construct(FilesystemOperator, Environment, RequestStack)
+        +convertHtmlFileToPdf(string fileName, string path) bool
+        +generateTrainingPdf(Training training) string
+    }
+    
+    class FilesystemOperator {
+        <<interface>>
+        +fileExists(string path) bool
+        +read(string path) string
+        +write(string path, string contents) void
+    }
+    
+    class Environment {
+        <<Twig>>
+        +render(string template, array context) string
+    }
+    
+    class RequestStack {
+        <<Symfony>>
+        +getMainRequest() Request
+    }
+    
+    class Training {
+        <<Entity>>
+    }
+    
+    class Dompdf {
+        +__construct(Options options)
+        +setBaseHost(string host) Dompdf
+        +setProtocol(string protocol) Dompdf
+        +setPaper(string size) Dompdf
+        +loadHtml(string html, string encoding) Dompdf
+        +render() void
+        +output() string
+    }
+    
+    class Options {
+        +set(string key, mixed value) Options
+    }
+    
+    class FilesystemException {
+        <<Exception>>
+    }
+
+    PDFGenerator "1" *-- "1" FilesystemOperator : filesStorage
+    PDFGenerator "1" *-- "1" Environment : twig
+    PDFGenerator "1" *-- "1" RequestStack : stack
+    PDFGenerator ..> Dompdf : creates/uses
+    PDFGenerator ..> Options : creates/uses
+    PDFGenerator ..> Training : uses
+    PDFGenerator ..> FilesystemException : catches
+    Dompdf ..> Options : depends on
+
+click PDFGenerator call linkCallback("c:/Users/Admin stagiaire.DESKTOP-8967908/Desktop/dawan/formations/architecture_logicielle/251117/PDFCreator.php#L12")
